@@ -1,46 +1,29 @@
-let users = JSON.parse(localStorage.getItem("users")) || [
-  { name: "maria", code: "1234" }
-]
-
-let links = JSON.parse(localStorage.getItem("links")) || {
-  treino: "#",
-  dieta: "#",
-  desafio: "#",
-  ranking: "#",
-  whatsapp: "https://wa.me/"
-}
+let users = JSON.parse(localStorage.getItem("users")) || []
+let links = JSON.parse(localStorage.getItem("links")) || {}
 
 function login() {
-  let nome = document.getElementById("nome").value.toLowerCase()
-  let codigo = document.getElementById("codigo").value
+  let nome = nomeInput.value.toLowerCase()
+  let codigo = codigoInput.value
 
   let user = users.find(u => u.name === nome && u.code === codigo)
 
   if (!user) return alert("Dados inválidos")
 
-  document.getElementById("login").classList.add("hidden")
-  document.getElementById("app").classList.remove("hidden")
+  loginDiv.classList.add("hidden")
+  appDiv.classList.remove("hidden")
 
   renderApp(nome)
 }
 
 function renderApp(nome) {
-  document.getElementById("app").innerHTML = `
+  appDiv.innerHTML = `
     <h2>Fala, ${nome} 🚀</h2>
 
-    <div class="card">
-      <button onclick="openLink('${links.treino}')">🔥 Fazer treino</button>
-    </div>
-
-    <div class="card">
-      <button onclick="openLink('${links.dieta}')">🥗 Dieta</button>
-      <button onclick="openLink('${links.desafio}')">🎯 Desafio</button>
-      <button onclick="openLink('${links.ranking}')">🏆 Ranking</button>
-    </div>
-
-    <div class="card">
-      <button onclick="openLink('${links.whatsapp}')">💬 WhatsApp</button>
-    </div>
+    <button onclick="openLink('${links.treino}')">🔥 Treino</button>
+    <button onclick="openLink('${links.dieta}')">🥗 Dieta</button>
+    <button onclick="openLink('${links.desafio}')">🎯 Desafio</button>
+    <button onclick="openLink('${links.ranking}')">🏆 Ranking</button>
+    <button onclick="openLink('${links.whatsapp}')">💬 WhatsApp</button>
   `
 }
 
@@ -53,15 +36,21 @@ function adminLogin() {
 
   if (senha !== "1234") return alert("Erro")
 
-  document.getElementById("login").classList.add("hidden")
-  document.getElementById("admin").classList.remove("hidden")
+  loginDiv.classList.add("hidden")
+  adminDiv.classList.remove("hidden")
 
   renderAdmin()
 }
 
 function renderAdmin() {
-  document.getElementById("admin").innerHTML = `
+  adminDiv.innerHTML = `
     <h2>Admin</h2>
+
+    <input id="newName" placeholder="Nome">
+    <input id="newCode" placeholder="Código">
+    <button onclick="addUser()">Adicionar aluno</button>
+
+    <hr>
 
     <input id="treino" placeholder="Link treino">
     <input id="dieta" placeholder="Link dieta">
@@ -69,8 +58,18 @@ function renderAdmin() {
     <input id="ranking" placeholder="Link ranking">
     <input id="whatsapp" placeholder="Link whatsapp">
 
-    <button onclick="saveLinks()">Salvar</button>
+    <button onclick="saveLinks()">Salvar links</button>
   `
+}
+
+function addUser() {
+  let name = newName.value.toLowerCase()
+  let code = newCode.value
+
+  users.push({ name, code })
+  localStorage.setItem("users", JSON.stringify(users))
+
+  alert("Aluno adicionado!")
 }
 
 function saveLinks() {
@@ -83,5 +82,5 @@ function saveLinks() {
   }
 
   localStorage.setItem("links", JSON.stringify(links))
-  alert("Salvo!")
+  alert("Links salvos!")
 }
