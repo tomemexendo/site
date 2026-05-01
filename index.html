@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Tô Me Mexendo</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #0B3C5D;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+.box {
+  background: #FF7A00;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 10px;
+  display: block;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+input, button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>TÔ ME MEXENDO</h1>
+
+<div id="login">
+  <input id="nome" placeholder="Nome"><br>
+  <input id="codigo" placeholder="Código"><br>
+  <button onclick="entrar()">Entrar</button><br>
+  <button onclick="abrirAdmin()">Área Admin</button>
+</div>
+
+<div id="app" style="display:none;"></div>
+
+<div id="admin" style="display:none;">
+  <h2>ADMIN</h2>
+
+  <input id="treino" placeholder="Link treino"><br>
+  <input id="dieta" placeholder="Link dieta"><br>
+  <input id="checkin" placeholder="Link check-in"><br>
+  <input id="whats" placeholder="Link WhatsApp"><br>
+  <button onclick="salvarLinks()">Salvar Links</button>
+
+  <h3>Adicionar Aluno</h3>
+  <input id="novoNome" placeholder="Nome">
+  <input id="novoCodigo" placeholder="Código">
+  <button onclick="addAluno()">Adicionar</button>
+
+  <div id="listaAlunos"></div>
+
+  <br><button onclick="voltar()">Voltar</button>
+</div>
+
+<script>
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [
+  { nome: "maria", codigo: "1234" }
+];
+
+let links = JSON.parse(localStorage.getItem("links")) || {
+  treino: "#",
+  dieta: "#",
+  checkin: "#",
+  whats: "#"
+};
+
+function entrar() {
+  const nome = document.getElementById("nome").value.toLowerCase();
+  const codigo = document.getElementById("codigo").value;
+
+  const user = usuarios.find(u => u.nome === nome && u.codigo === codigo);
+
+  if (user) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+
+    document.getElementById("app").innerHTML = `
+      <a class="box" href="${links.treino}">🏋️ Treino</a>
+      <a class="box" href="${links.dieta}">🥗 Dieta</a>
+      <a class="box" href="${links.checkin}">📅 Check-in</a>
+      <a class="box" href="${links.whats}">💬 Falar comigo</a>
+    `;
+  } else {
+    alert("Dados inválidos");
+  }
+}
+
+function abrirAdmin() {
+  const senha = prompt("Senha admin:");
+  if (senha === "1234") {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+
+    document.getElementById("treino").value = links.treino;
+    document.getElementById("dieta").value = links.dieta;
+    document.getElementById("checkin").value = links.checkin;
+    document.getElementById("whats").value = links.whats;
+
+    renderAlunos();
+  }
+}
+
+function salvarLinks() {
+  links = {
+    treino: document.getElementById("treino").value,
+    dieta: document.getElementById("dieta").value,
+    checkin: document.getElementById("checkin").value,
+    whats: document.getElementById("whats").value
+  };
+
+  localStorage.setItem("links", JSON.stringify(links));
+  alert("Links atualizados!");
+}
+
+function addAluno() {
+  const nome = document.getElementById("novoNome").value.toLowerCase();
+  const codigo = document.getElementById("novoCodigo").value;
+
+  usuarios.push({ nome, codigo });
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+  renderAlunos();
+}
+
+function renderAlunos() {
+  const lista = document.getElementById("listaAlunos");
+  lista.innerHTML = "";
+
+  usuarios.forEach((u, i) => {
+    lista.innerHTML += `
+      ${u.nome} (${u.codigo})
+      <button onclick="remover(${i})">❌</button><br>
+    `;
+  });
+}
+
+function remover(i) {
+  usuarios.splice(i, 1);
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  renderAlunos();
+}
+
+function voltar() {
+  location.reload();
+}
+</script>
+
+</body>
+</html>
