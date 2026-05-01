@@ -1,6 +1,6 @@
 body {
   font-family: Arial;
-  background: linear-gradient(to bottom, #0f172a, #000);
+  background: #0f172a;
   color: white;
   text-align: center;
   padding: 20px;
@@ -18,15 +18,9 @@ button {
   background: #3b82f6;
   color: white;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .hidden {
   display: none;
-}
-
-.card {
-  background: #1f2937;
-  padding: 15px;
-  margin: 10px;
-  border-radius: 10px;
 }
