@@ -1,86 +1,89 @@
-let users = JSON.parse(localStorage.getItem("users")) || []
-let links = JSON.parse(localStorage.getItem("links")) || {}
+const SUPABASE_URL = "https://pxpojetrshxvtaznkxkj.supabase.co"
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4cG9qZXRyc2h4dnRhem5reGtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1ODgxMDYsImV4cCI6MjA5MzE2NDEwNn0.ClFcL_dtAvdBQdrqZUlDi2CnhGEH_wbATrmxjJhpYYs"
 
-function login() {
-  let nome = nomeInput.value.toLowerCase()
-  let codigo = codigoInput.value
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
-  let user = users.find(u => u.name === nome && u.code === codigo)
+let currentUser = null
 
-  if (!user) return alert("Dados inválidos")
+// LOGIN DO ALUNO
+async function login() {
+  let nome = document.getElementById("nome").value.toLowerCase()
+  let codigo = document.getElementById("codigo").value
 
-  loginDiv.classList.add("hidden")
-  appDiv.classList.remove("hidden")
+  const { data, error } = await client
+    .from("users")
+    .select("*")
+    .eq("name", nome)
+    .eq("code", codigo)
+    .single()
 
-  renderApp(nome)
+  if (error || !data) {
+    alert("Dados inválidos")
+    return
+  }
+
+  currentUser = data
+
+  document.getElementById("login").classList.add("hidden")
+  document.getElementById("app").classList.remove("hidden")
+
+  renderApp()
 }
 
-function renderApp(nome) {
-  appDiv.innerHTML = `
-    <h2>Fala, ${nome} 🚀</h2>
+// ÁREA DO ALUNO
+function renderApp() {
+  document.getElementById("app").innerHTML = `
+    <h2>Bem-vindo 💪</h2>
 
-    <button onclick="openLink('${links.treino}')">🔥 Treino</button>
-    <button onclick="openLink('${links.dieta}')">🥗 Dieta</button>
-    <button onclick="openLink('${links.desafio}')">🎯 Desafio</button>
-    <button onclick="openLink('${links.ranking}')">🏆 Ranking</button>
-    <button onclick="openLink('${links.whatsapp}')">💬 WhatsApp</button>
+    <div class="card">
+      <button onclick="alert('link treino aqui')">🔥 Treino</button>
+      <button onclick="alert('link dieta aqui')">🥗 Dieta</button>
+      <button onclick="alert('link desafio aqui')">🎯 Desafio</button>
+      <button onclick="alert('link ranking aqui')">🏆 Ranking</button>
+    </div>
   `
 }
 
-function openLink(link) {
-  window.open(link, "_blank")
-}
-
+// ADMIN LOGIN SIMPLES
 function adminLogin() {
-  let senha = prompt("Senha:")
+  let senha = prompt("Senha admin:")
 
-  if (senha !== "1234") return alert("Erro")
+  if (senha !== "1234") {
+    alert("Senha incorreta")
+    return
+  }
 
-  loginDiv.classList.add("hidden")
-  adminDiv.classList.remove("hidden")
+  document.getElementById("login").classList.add("hidden")
+  document.getElementById("admin").classList.remove("hidden")
 
   renderAdmin()
 }
 
+// ADMIN
 function renderAdmin() {
-  adminDiv.innerHTML = `
+  document.getElementById("admin").innerHTML = `
     <h2>Admin</h2>
 
     <input id="newName" placeholder="Nome">
     <input id="newCode" placeholder="Código">
+
     <button onclick="addUser()">Adicionar aluno</button>
-
-    <hr>
-
-    <input id="treino" placeholder="Link treino">
-    <input id="dieta" placeholder="Link dieta">
-    <input id="desafio" placeholder="Link desafio">
-    <input id="ranking" placeholder="Link ranking">
-    <input id="whatsapp" placeholder="Link whatsapp">
-
-    <button onclick="saveLinks()">Salvar links</button>
   `
 }
 
-function addUser() {
-  let name = newName.value.toLowerCase()
-  let code = newCode.value
+// ADICIONAR ALUNO NO SUPABASE
+async function addUser() {
+  let name = document.getElementById("newName").value.toLowerCase()
+  let code = document.getElementById("newCode").value
 
-  users.push({ name, code })
-  localStorage.setItem("users", JSON.stringify(users))
+  const { error } = await client
+    .from("users")
+    .insert([{ name, code }])
 
-  alert("Aluno adicionado!")
-}
-
-function saveLinks() {
-  links = {
-    treino: treino.value,
-    dieta: dieta.value,
-    desafio: desafio.value,
-    ranking: ranking.value,
-    whatsapp: whatsapp.value
+  if (error) {
+    alert("Erro ao adicionar")
+    console.log(error)
+  } else {
+    alert("Aluno adicionado!")
   }
-
-  localStorage.setItem("links", JSON.stringify(links))
-  alert("Links salvos!")
 }
