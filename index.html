@@ -1,160 +1,122 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Tô Me Mexendo</title>
+<div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
 
-<style>
-body {
-  font-family: Arial;
-  background: #0B3C5D;
-  color: white;
-  text-align: center;
-  padding: 20px;
-}
-.box {
-  background: #FF7A00;
-  padding: 15px;
-  margin: 10px;
-  border-radius: 10px;
-  display: block;
-  text-decoration: none;
-  color: white;
-  font-weight: bold;
-}
-input, button {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
-  border: none;
-}
-</style>
-</head>
+  {/* HEADER */}
+  <div className="bg-gray-900/80 backdrop-blur border-b border-gray-800 sticky top-0 z-50">
+    <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 className="text-xl font-bold">Tô Me Mexendo 💪</h1>
+      <button 
+        onClick={handleLogout}
+        className="text-sm bg-red-600 hover:bg-red-700 px-3 py-1 rounded-lg"
+      >
+        Sair
+      </button>
+    </div>
+  </div>
 
-<body>
+  <div className="max-w-5xl mx-auto px-4 py-6 space-y-8">
 
-<h1>TÔ ME MEXENDO</h1>
+    {/* HERO */}
+    <div className="bg-gradient-to-r from-blue-600 to-blue-400 p-6 rounded-2xl shadow-xl">
+      <h2 className="text-2xl font-bold mb-2">
+        Fala, {user?.name}! 🚀
+      </h2>
+      <p className="text-blue-100 mb-4">
+        Seu plano da semana está pronto. Só seguir o passo a passo abaixo 👇
+      </p>
 
-<div id="login">
-  <input id="nome" placeholder="Nome"><br>
-  <input id="codigo" placeholder="Código"><br>
-  <button onclick="entrar()">Entrar</button><br>
-  <button onclick="abrirAdmin()">Área Admin</button>
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <div className="bg-white/10 p-3 rounded-lg">1️⃣ Ver dieta</div>
+        <div className="bg-white/10 p-3 rounded-lg">2️⃣ Fazer treino</div>
+        <div className="bg-white/10 p-3 rounded-lg">3️⃣ Seguir rotina</div>
+        <div className="bg-white/10 p-3 rounded-lg">4️⃣ Fazer check-in</div>
+      </div>
+    </div>
+
+    {/* AÇÃO PRINCIPAL */}
+    <div>
+      <h3 className="text-lg font-semibold mb-3">🔥 Começar agora</h3>
+
+      <button
+        onClick={() => handleOpenLink(getContent('workout_home')?.link)}
+        className="w-full bg-orange-500 hover:bg-orange-600 p-5 rounded-xl text-lg font-bold shadow-lg transition transform hover:scale-105"
+      >
+        ▶️ Fazer treino de hoje
+      </button>
+    </div>
+
+    {/* DIETA */}
+    <div>
+      <h3 className="text-lg font-semibold mb-3">🥗 Sua dieta</h3>
+
+      <div className="grid grid-cols-2 gap-3">
+        {[
+          { type: 'diet_60', label: 'Até 60kg' },
+          { type: 'diet_90', label: '60-90kg' },
+          { type: 'diet_120', label: '90-120kg' },
+          { type: 'diet_plus', label: '+120kg' },
+        ].map((diet) => {
+          const content = getContent(diet.type)
+          return (
+            <button
+              key={diet.type}
+              onClick={() => handleOpenLink(content?.link)}
+              className="bg-blue-600 hover:bg-blue-700 p-4 rounded-xl text-sm font-semibold transition"
+            >
+              {diet.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+
+    {/* TREINOS */}
+    <div className="space-y-3">
+      <button
+        onClick={() => handleOpenLink(getContent('workout_home')?.link)}
+        className="w-full bg-gray-800 hover:bg-gray-700 p-4 rounded-xl flex justify-between"
+      >
+        🏠 Treino em casa <span>→</span>
+      </button>
+
+      <button
+        onClick={() => handleOpenLink(getContent('workout_gym')?.link)}
+        className="w-full bg-gray-800 hover:bg-gray-700 p-4 rounded-xl flex justify-between"
+      >
+        🏋️ Academia <span>→</span>
+      </button>
+    </div>
+
+    {/* EXTRAS */}
+    <div className="grid grid-cols-2 gap-3">
+      <button
+        onClick={() => handleOpenLink(getContent('challenge')?.link)}
+        className="bg-purple-600 hover:bg-purple-700 p-4 rounded-xl"
+      >
+        🎯 Desafio
+      </button>
+
+      <button
+        onClick={() => handleOpenLink(getContent('ranking')?.link)}
+        className="bg-yellow-500 hover:bg-yellow-600 p-4 rounded-xl"
+      >
+        🏆 Ranking
+      </button>
+    </div>
+
+    {/* SUPORTE */}
+    <div className="bg-gray-800 p-6 rounded-2xl text-center">
+      <h3 className="text-xl font-bold mb-2">Precisa de ajuda?</h3>
+      <p className="text-gray-400 mb-4 text-sm">
+        Fala comigo direto no WhatsApp 👇
+      </p>
+
+      <button
+        onClick={() => window.open(whatsappLink, '_blank')}
+        className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-xl font-bold shadow-lg"
+      >
+        💬 Falar no WhatsApp
+      </button>
+    </div>
+
+  </div>
 </div>
-
-<div id="app" style="display:none;"></div>
-
-<div id="admin" style="display:none;">
-  <h2>ADMIN</h2>
-
-  <input id="treino" placeholder="Link treino"><br>
-  <input id="dieta" placeholder="Link dieta"><br>
-  <input id="checkin" placeholder="Link check-in"><br>
-  <input id="whats" placeholder="Link WhatsApp"><br>
-  <button onclick="salvarLinks()">Salvar Links</button>
-
-  <h3>Adicionar Aluno</h3>
-  <input id="novoNome" placeholder="Nome">
-  <input id="novoCodigo" placeholder="Código">
-  <button onclick="addAluno()">Adicionar</button>
-
-  <div id="listaAlunos"></div>
-
-  <br><button onclick="voltar()">Voltar</button>
-</div>
-
-<script>
-let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [
-  { nome: "maria", codigo: "1234" }
-];
-
-let links = JSON.parse(localStorage.getItem("links")) || {
-  treino: "#",
-  dieta: "#",
-  checkin: "#",
-  whats: "#"
-};
-
-function entrar() {
-  const nome = document.getElementById("nome").value.toLowerCase();
-  const codigo = document.getElementById("codigo").value;
-
-  const user = usuarios.find(u => u.nome === nome && u.codigo === codigo);
-
-  if (user) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
-
-    document.getElementById("app").innerHTML = `
-      <a class="box" href="${links.treino}">🏋️ Treino</a>
-      <a class="box" href="${links.dieta}">🥗 Dieta</a>
-      <a class="box" href="${links.checkin}">📅 Check-in</a>
-      <a class="box" href="${links.whats}">💬 Falar comigo</a>
-    `;
-  } else {
-    alert("Dados inválidos");
-  }
-}
-
-function abrirAdmin() {
-  const senha = prompt("Senha admin:");
-  if (senha === "1234") {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("admin").style.display = "block";
-
-    document.getElementById("treino").value = links.treino;
-    document.getElementById("dieta").value = links.dieta;
-    document.getElementById("checkin").value = links.checkin;
-    document.getElementById("whats").value = links.whats;
-
-    renderAlunos();
-  }
-}
-
-function salvarLinks() {
-  links = {
-    treino: document.getElementById("treino").value,
-    dieta: document.getElementById("dieta").value,
-    checkin: document.getElementById("checkin").value,
-    whats: document.getElementById("whats").value
-  };
-
-  localStorage.setItem("links", JSON.stringify(links));
-  alert("Links atualizados!");
-}
-
-function addAluno() {
-  const nome = document.getElementById("novoNome").value.toLowerCase();
-  const codigo = document.getElementById("novoCodigo").value;
-
-  usuarios.push({ nome, codigo });
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-  renderAlunos();
-}
-
-function renderAlunos() {
-  const lista = document.getElementById("listaAlunos");
-  lista.innerHTML = "";
-
-  usuarios.forEach((u, i) => {
-    lista.innerHTML += `
-      ${u.nome} (${u.codigo})
-      <button onclick="remover(${i})">❌</button><br>
-    `;
-  });
-}
-
-function remover(i) {
-  usuarios.splice(i, 1);
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
-  renderAlunos();
-}
-
-function voltar() {
-  location.reload();
-}
-</script>
-
-</body>
-</html>
